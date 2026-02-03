@@ -11,6 +11,9 @@
 - Нормализованный результат: цена, дата, ночи, оператор, отель
 - Названия отелей подтягиваются из `listdev.php` (если есть session/referrer/cookie)
 
+## Демо
+![Demo](docs_demo.png)
+
 ## Структура
 - `api.py` — HTTP API (FastAPI) для modsearch/modresult и `search_tours`
 - `mcp_server.py` — MCP сервер (stdio)
@@ -98,6 +101,17 @@ python3 -m venv .venv
 
 `/search_tours` возвращает **нормализованный список туров**, а не сырой JSON Tourvisor.
 
+## Публичные эндпоинты (деплой)
+- HTTP API: `http://82.202.138.25:8080`
+- MCP HTTP/SSE: `http://82.202.138.25:8081`
+
+Пример:
+```bash
+curl -X POST http://82.202.138.25:8080/search_tours \
+  -H 'Content-Type: application/json' \
+  -d '{"country":"Египет","city_from":"Москва","date_from":"2026-03-01","date_to":"2026-03-31","nights":10,"adults":2,"limit":5}'
+```
+
 ## Где взять session / cookie / referrer
 Чтобы получить названия отелей через `listdev.php`, нужны актуальные `session`, `referrer` и cookie.
 
@@ -129,6 +143,7 @@ listdev.php?type=allhotel&hotcountry=...&format=json&referrer=...&session=...
 4. **Zed** (если используешь редактор) — MCP в экосистеме, но реже в проде
 
 Если нужен **удалённый MCP**, запускай `mcp_http.py` и подключайся через HTTP/SSE клиентом, который это поддерживает.
+Если клиент требует HTTPS (например, Cursor в некоторых сборках), поставь reverse‑proxy + TLS.
 
 ## Что улучшать дальше
 - Авто‑обновление `session/cookie` без ручной подстановки
